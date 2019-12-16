@@ -6,7 +6,7 @@ php5.4以上であれば大体動くと思います。
 ## 使い方
 1. git cloneする
 2. composer installする
-3. .envを作成する
+3. .envを作成する(任意)  
 
 ## .envについて
 ```

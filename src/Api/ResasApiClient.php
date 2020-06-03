@@ -47,6 +47,7 @@ class ResasApiClient {
 	public function set_action($action)
 	{
 		$this->action = $action;
+		return $this;
 	}
 
 	/**
@@ -63,6 +64,7 @@ class ResasApiClient {
 	public function set_parameters($parameters)
 	{
 		$this->parameters = $parameters;
+		return $this;
 	}
 
 	/**

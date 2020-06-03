@@ -155,14 +155,15 @@ class ResasApiClient {
 	 * 結果をファイルに再利用可能な形でエクスポート
 	 * @param string $filename ファイル名
 	 * @param string $under_php54 trueのとき配列の形式を[]からphp5.4未満のバージョンで読み込み可能なarray()に変更
-	 * @return int|false
+	 * @return string APIリクエストのレスポンスに含まれるメッセージ
 	 */
 	public function export_to($filename = null, $under_php54 = false)
 	{
 		$response = $this->_call_api();
+		$response = json_decode($response, true);
 		$out  = "<?php" . PHP_EOL;
 		$out .= "return ";
-		$export = var_export($response, true);
+		$export = var_export($response['result'], true);
 		if (!$under_php54) {
 			$export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
 			$export = preg_replace("/    /", "\t", $export);
@@ -172,6 +173,7 @@ class ResasApiClient {
 		}
 		$out .= $export;
 		$out .= ";" . PHP_EOL;
-		return file_put_contents($filename, $out);
+		file_put_contents($filename, $out);
+		return $response['message'];
 	}
 }

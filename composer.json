@@ -9,8 +9,10 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "vlucas/phpdotenv": "4.1",
-        "monolog/monolog": "1.25"
+        "vlucas/phpdotenv": "4.1"
+    },
+    "require-dev": {
+        "monolog/monolog": "^1.25"
     },
     "autoload": {
         "psr-4": {

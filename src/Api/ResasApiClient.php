@@ -2,6 +2,7 @@
 namespace TikuwaApp\Api;
 
 use Exception;
+use TikuwaApp\Utility\Hash;
 
 /**
  * ResasApiClient
@@ -88,9 +89,7 @@ class ResasApiClient {
 
 	/**
 	 * RESASにcurlでAPIリクエストする
-	 * @param string $action エンドポイント以下のURI
-	 * @param array $parameters パラメータ配列
-	 * @return json文字列のレスポンス
+	 * @return array
 	 */
 	private function _call_api()
 	{
@@ -122,12 +121,14 @@ class ResasApiClient {
 		if ($response == '"400"') {
 			throw new Exception("400 Bad Request");
 		}
-		$check_arr = json_decode($response, true);
-		if (isset($check_arr['statusCode']) && $check_arr['statusCode'] > 400) {
-			throw new Exception(sprintf("Response error. code: %d, reason: %s", $check_arr['statusCode'], @$check_arr['message']));
+		$response = json_decode($response, true);
+		if (isset($response['statusCode']) && $response['statusCode'] > 400) {
+			throw new Exception(sprintf("Response error. code: %d, reason: %s", $response['statusCode'], @$response['message']));
+		} else if (!isset($response['result'])) {
+			throw new Exception("Response result not found.");
 		}
 
-		return $response;
+		return $response['result'];
 	}
 
 	/**
@@ -144,22 +145,22 @@ class ResasApiClient {
 	}
 
 	/**
-	 * 結果をjson文字列で取得
-	 * @return string
-	 */
-	public function to_json()
-	{
-		return $this->_call_api();
-	}
-
-	/**
 	 * 結果を配列で取得
 	 * @return array
 	 */
 	public function to_array()
 	{
+		return $this->_call_api();
+	}
+
+	/**
+	 * 結果をjson文字列で取得
+	 * @return string
+	 */
+	public function to_json()
+	{
 		$response = $this->_call_api();
-		return json_decode($response, true);
+		return json_encode($response);
 	}
 
 	/**
@@ -169,22 +170,40 @@ class ResasApiClient {
 	public function to_obj()
 	{
 		$response = $this->_call_api();
-		return json_decode($response);
+		return json_decode(json_encode($response));
+	}
+
+	/**
+	 * 結果をKey Valueのペアに持ち替えた配列で取得する
+	 * ※配列の持ち替えについてCakePHP3のUtility/Hashクラスを使用しています
+	 * @param string $key_path key側として使用する値のパス構文
+	 * @param string $value_path value側として使用する値のパス構文
+	 */
+	public function to_kv_array($key_path = null, $value_path = null)
+	{
+		if (is_null($key_path)) {
+			throw new Exception('$key_path is required.');
+		}
+		if (is_null($value_path)) {
+			throw new Exception('$value_path is required.');
+		}
+		$response = $this->_call_api();
+		$response = Hash::combine($response, $key_path, $value_path);
+		return $response;
 	}
 
 	/**
 	 * 結果をファイルに再利用可能な形でエクスポート
 	 * @param string $filename ファイル名
 	 * @param string $under_php54 trueのとき配列の形式を[]からphp5.4未満のバージョンで読み込み可能なarray()に変更
-	 * @return string APIリクエストのレスポンスに含まれるメッセージ
+	 * @return int|false
 	 */
 	public function export_to($filename = null, $under_php54 = false)
 	{
 		$response = $this->_call_api();
-		$response = json_decode($response, true);
 		$out  = "<?php" . PHP_EOL;
 		$out .= "return ";
-		$export = var_export($response['result'], true);
+		$export = var_export($response, true);
 		if (!$under_php54) {
 			$export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
 			$export = preg_replace("/    /", "\t", $export);
@@ -194,7 +213,6 @@ class ResasApiClient {
 		}
 		$out .= $export;
 		$out .= ";" . PHP_EOL;
-		file_put_contents($filename, $out);
-		return $response['message'];
+		return file_put_contents($filename, $out);
 	}
 }

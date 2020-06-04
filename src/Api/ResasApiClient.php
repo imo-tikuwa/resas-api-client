@@ -3,6 +3,12 @@ namespace TikuwaApp\Api;
 
 use Exception;
 
+/**
+ * ResasApiClient
+ *
+ * @copyright Copyright (c) 2020 imo-tikuwa
+ * @license https://opensource.org/licenses/mit-license.php MIT License
+ */
 class ResasApiClient {
 
 	/**
@@ -14,11 +20,16 @@ class ResasApiClient {
 	/**
 	 * Constructor
 	 * @param string $api_key RESAS-APIの利用登録時に発行されたAPIキー
+	 *               未指定の場合、ENV_RESAS_API_KEYという名前の環境変数を参照します。
+	 *               それでも見つからない場合はエラーを投げます。
 	 */
 	public function __construct($api_key = null)
 	{
 		if (is_null($api_key)) {
-			throw new Exception("Please set the api key of RESAS-API");
+			$api_key = getenv('ENV_RESAS_API_KEY');
+			if ($api_key === false) {
+				throw new Exception("Please set the api key of RESAS-API");
+			}
 		}
 		$this->api_key = $api_key;
 	}
@@ -107,6 +118,14 @@ class ResasApiClient {
 
 		$response = curl_exec($curl);
 		curl_close($curl);
+
+		if ($response == '"400"') {
+			throw new Exception("400 Bad Request");
+		}
+		$check_arr = json_decode($response, true);
+		if (isset($check_arr['statusCode']) && $check_arr['statusCode'] > 400) {
+			throw new Exception(sprintf("Response error. code: %d, reason: %s", $check_arr['statusCode'], @$check_arr['message']));
+		}
 
 		return $response;
 	}

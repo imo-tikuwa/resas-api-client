@@ -10,8 +10,7 @@ try {
 	$date->setTimezone(new DateTimeZone('Asia/Tokyo'));
     $filename = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . basename(__FILE__, ".php") . '_' . $date->format('YmdHis') . '.php';
 
-    $api_key = getenv('ENV_RESAS_API_KEY');
-    $resas_api_client = new ResasApiClient($api_key);
+    $resas_api_client = new ResasApiClient();
     $resas_api_client->find('api/v1/prefectures')->export_to($filename);
 
     // 生成したPHPファイルを読み込んでの処理(先頭から10件のデータを取得して配列に書き込み)

@@ -6,8 +6,7 @@ use TikuwaApp\Api\ResasApiClient;
 
 // 東京都の市区町村一覧を取得する
 try {
-    $api_key = getenv('ENV_RESAS_API_KEY');
-    $resas_api_client = new ResasApiClient($api_key);
+    $resas_api_client = new ResasApiClient();
     $result = $resas_api_client->find('api/v1/cities', ['prefCode' => '13'])->to_array();
     logging($result, __FILE__);
 } catch(Exception $e) {

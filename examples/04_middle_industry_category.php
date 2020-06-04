@@ -6,8 +6,7 @@ use TikuwaApp\Api\ResasApiClient;
 
 // 情報通信業の産業中分類を取得
 try {
-    $api_key = getenv('ENV_RESAS_API_KEY');
-    $resas_api_client = new ResasApiClient($api_key);
+    $resas_api_client = new ResasApiClient();
     $result = $resas_api_client->find('api/v1/industries/middle', ['sicCode' => 'G'])->to_array();
     logging($result, __FILE__);
 } catch(Exception $e) {

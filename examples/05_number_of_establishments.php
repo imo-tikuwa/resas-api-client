@@ -6,8 +6,7 @@ use TikuwaApp\Api\ResasApiClient;
 
 // 東京都千代田区の情報通信業の情報サービス業の事業者数を取得
 try {
-	$api_key = getenv('ENV_RESAS_API_KEY');
-	$resas_api_client = new ResasApiClient($api_key);
+	$resas_api_client = new ResasApiClient();
 	$result = $resas_api_client->find('api/v1/municipality/plant/perYear', [
 			'prefCode' => '13',
 			'cityCode' => '13101',

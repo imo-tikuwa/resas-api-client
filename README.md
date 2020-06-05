@@ -11,7 +11,7 @@ composer require imo-tikuwa/resas-api-client
 ## 使い方
 
 1. ResasApiClientのコンストラクタでAPIキーを渡してあげてください。
-2. find関数もしくはset_action,set_parameters関数で使用するAPIのアクションとパラメータをセット。
+2. find関数で使用するAPIのアクションと必要に応じてパラメータをセット。
 3. 以下のいずれかでデータを取得
 
 |関数名|内容|

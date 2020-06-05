@@ -68,7 +68,7 @@ class ResasApiClient {
     /**
      * リクエストする際のアクション をセット
      */
-    public function set_action($action)
+    public function setAction($action)
     {
         $this->action = $action;
         return $this;
@@ -77,7 +77,7 @@ class ResasApiClient {
     /**
      * リクエストする際のアクション を取得
      */
-    public function get_action()
+    public function getAction()
     {
         return $this->action;
     }
@@ -85,7 +85,7 @@ class ResasApiClient {
     /**
      * リクエストする際の検索条件 をセット
      */
-    public function set_parameters($parameters)
+    public function setParameters($parameters)
     {
         $this->parameters = $parameters;
         return $this;
@@ -94,7 +94,7 @@ class ResasApiClient {
     /**
      * リクエストする際の検索条件 を取得
      */
-    public function get_parameters()
+    public function getParameters()
     {
         return $this->parameters;
     }
@@ -102,7 +102,7 @@ class ResasApiClient {
     /**
      * Hashクラスで絞り込む際のkey側のパス構文 をセット
      */
-    private function set_key_path($key_path)
+    private function setKeyPath($key_path)
     {
         $this->key_path = $key_path;
         return $this;
@@ -111,7 +111,7 @@ class ResasApiClient {
     /**
      * Hashクラスで絞り込む際のkey側のパス構文 を取得
      */
-    public function get_key_path()
+    public function getKeyPath()
     {
         return $this->key_path;
     }
@@ -119,7 +119,7 @@ class ResasApiClient {
     /**
      * Hashクラスで絞り込む際のvalue側のパス構文 をセット
      */
-    private function set_value_path($value_path)
+    private function setValuePath($value_path)
     {
         $this->value_path = $value_path;
         return $this;
@@ -128,7 +128,7 @@ class ResasApiClient {
     /**
      * Hashクラスで絞り込む際のvalue側のパス構文 を取得
      */
-    public function get_value_path()
+    public function getValuePath()
     {
         return $this->value_path;
     }
@@ -137,13 +137,13 @@ class ResasApiClient {
      * RESASにcurlでAPIリクエストする
      * @return array
      */
-    private function _call_api($return_to = 'array')
+    private function callApi($return_to = 'array')
     {
-        $action = $this->get_action();
+        $action = $this->getAction();
         if (is_null($action)) {
             throw new Exception("Please set the request action of RESAS-API");
         }
-        $parameters = $this->get_parameters();
+        $parameters = $this->getParameters();
 
         $url = self::API_ENDPOINT . $action;
         if (!is_null($parameters)) {
@@ -178,8 +178,8 @@ class ResasApiClient {
         $result = $response['result'];
 
         // CakePHP3のUtility/Hash::combine()による結果の絞込
-        $key_path = $this->get_key_path();
-        $value_path = $this->get_value_path();
+        $key_path = $this->getKeyPath();
+        $value_path = $this->getValuePath();
         if (!is_null($key_path) && !is_null($value_path)) {
             $result = Hash::combine($result, $key_path, $value_path);
         }
@@ -201,8 +201,8 @@ class ResasApiClient {
      */
     public function find($action, $parameters = null)
     {
-        $this->set_action($action);
-        $this->set_parameters($parameters);
+        $this->setAction($action);
+        $this->setParameters($parameters);
         return $this;
     }
 
@@ -212,10 +212,10 @@ class ResasApiClient {
      */
     public function clear()
     {
-        $this->set_action(null);
-        $this->set_parameters(null);
-        $this->set_key_path(null);
-        $this->set_value_path(null);
+        $this->setAction(null);
+        $this->setParameters(null);
+        $this->setKeyPath(null);
+        $this->setValuePath(null);
         return $this;
     }
 
@@ -226,7 +226,7 @@ class ResasApiClient {
      * @param string $value_path value側として使用する値のパス構文
      * @return $this
      */
-    public function set_kv_path($key_path = null, $value_path = null)
+    public function setKeyValuePath($key_path = null, $value_path = null)
     {
         if (is_null($key_path)) {
             throw new Exception('$key_path is required.');
@@ -234,8 +234,8 @@ class ResasApiClient {
         if (is_null($value_path)) {
             throw new Exception('$value_path is required.');
         }
-        $this->set_key_path($key_path);
-        $this->set_value_path($value_path);
+        $this->setKeyPath($key_path);
+        $this->setValuePath($value_path);
         return $this;
     }
 
@@ -243,27 +243,27 @@ class ResasApiClient {
      * 結果を配列で取得
      * @return array
      */
-    public function to_array()
+    public function toArray()
     {
-        return $this->_call_api('array');
+        return $this->callApi('array');
     }
 
     /**
      * 結果をjson文字列で取得
      * @return string
      */
-    public function to_json()
+    public function toJson()
     {
-        return $this->_call_api('json');
+        return $this->callApi('json');
     }
 
     /**
      * 結果をオブジェクトで取得
      * @return array
      */
-    public function to_obj()
+    public function toObject()
     {
-        return $this->_call_api('object');
+        return $this->callApi('object');
     }
 
     /**
@@ -271,9 +271,9 @@ class ResasApiClient {
      * @param string $filename ファイル名
      * @return int|false
      */
-    public function export_to($filename = null)
+    public function toExport($filename = null)
     {
-        $result = $this->_call_api('array');
+        $result = $this->callApi('array');
         $out  = "<?php" . PHP_EOL;
         $out .= "return ";
         $export = var_export($result, true);

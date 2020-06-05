@@ -12,7 +12,7 @@ try {
 			'cityCode' => '13101',
 			'sicCode' => 'G',
 			'simcCode' => '39',
-	])->to_array();
+	])->toArray();
 	logging($result, __FILE__);
 } catch(Exception $e) {
 	echo $e->getMessage();

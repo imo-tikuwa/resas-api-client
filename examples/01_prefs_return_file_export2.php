@@ -12,8 +12,8 @@ try {
     sleep(1);
 
     (new ResasApiClient())->find('api/v1/prefectures')
-    ->set_kv_path("{n}[prefCode<=15].prefCode", "{n}[prefCode<=15].prefName")
-    ->export_to($filename);
+    ->setKeyValuePath("{n}[prefCode<=15].prefCode", "{n}[prefCode<=15].prefName")
+    ->toExport($filename);
 
     // 配列として読み込めることを確認
     // prefCode=1の北海道からprefCode=15の新潟県までで絞り込まれていることを確認

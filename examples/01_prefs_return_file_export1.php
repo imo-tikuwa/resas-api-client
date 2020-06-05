@@ -11,7 +11,7 @@ try {
     $filename = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . basename(__FILE__, ".php") . '_' . $date->format('YmdHis') . '.php';
     sleep(1);
 
-    (new ResasApiClient())->find('api/v1/prefectures')->export_to($filename);
+    (new ResasApiClient())->find('api/v1/prefectures')->toExport($filename);
 
     // 配列として読み込めることを確認
     $data = include ($filename);

@@ -9,8 +9,8 @@ use TikuwaApp\Utility\Hash;
 try {
     $resas_api_client = new ResasApiClient();
     $result = $resas_api_client->find('api/v1/cities', ['prefCode' => '13'])
-    ->set_kv_path("{n}[cityName=/^.+区$/].cityCode", "{n}[cityName=/^.+区$/].cityName")
-    ->to_array();
+    ->setKeyValuePath("{n}[cityName=/^.+区$/].cityCode", "{n}[cityName=/^.+区$/].cityName")
+    ->toArray();
     logging($result, __FILE__);
 } catch(Exception $e) {
     echo $e->getMessage();

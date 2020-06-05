@@ -3,7 +3,6 @@ require_once (dirname(__DIR__) . "/vendor/autoload.php");
 require_once 'common.php';
 
 use TikuwaApp\Api\ResasApiClient;
-use TikuwaApp\Utility\Hash;
 
 // 東京都の市区町村のうち「〇〇区」に一致する自治体のみを絞り込んで取得する
 try {

@@ -34,7 +34,7 @@ require_once (dirname(__DIR__) . "/vendor/autoload.php");
 
 use TikuwaApp\Api\ResasApiClient;
 
-$api_key = getenv('ENV_RESAS_API_KEY');
+$api_key = '[API キー]';
 $resas_api_client = new ResasApiClient($api_key);
 $result = $resas_api_client->find('api/v1/cities', ['prefCode' => '13'])->toArray();
 ```
@@ -55,6 +55,10 @@ $result = $resas_api_client->find('api/v1/cities', ['prefCode' => '13'])
 ---
 以下は都道府県のコード値が15以下のものについてKey,Valueの配列で取得し、ファイルに出力するプログラムになります。
 ```
+require_once (dirname(__DIR__) . "/vendor/autoload.php");
+
+use TikuwaApp\Api\ResasApiClient;
+
 $date = new DateTime();
 $date->setTimezone(new DateTimeZone('Asia/Tokyo'));
 $filename = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . basename(__FILE__, ".php") . '_' . $date->format('YmdHis') . '.php';
@@ -67,3 +71,6 @@ $filename = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATO
 ## リンク
 [RESAS-API - 地域経済分析システム（RESAS）のAPI提供情報](https://opendata.resas-portal.go.jp/)  
 [RESAS-API - API概要](https://opendata.resas-portal.go.jp/docs/api/v1/index.html)
+
+## ライセンス
+ソースの一部に[cakephp/utility](https://github.com/cakephp/utility)のプログラムを使用させていただいています。

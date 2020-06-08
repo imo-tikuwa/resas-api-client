@@ -66,7 +66,17 @@ class ResasApiClient {
     private $value_path = null;
 
     /**
+     * 429 Too Many Requestsエラー抑制のための待機処理を挟むかどうかのフラグ
+     * trueのときAPIリクエストの直後に0.21秒の待機を実施する
+     * @var bool
+     * @see https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html
+     */
+    private $safety_wait = false;
+
+    /**
      * リクエストする際のアクション をセット
+     * @param string $action
+     * @return $this
      */
     public function setAction($action)
     {
@@ -76,6 +86,7 @@ class ResasApiClient {
 
     /**
      * リクエストする際のアクション を取得
+     * @return string
      */
     public function getAction()
     {
@@ -84,6 +95,8 @@ class ResasApiClient {
 
     /**
      * リクエストする際の検索条件 をセット
+     * @param string $parameters
+     * @return $this
      */
     public function setParameters($parameters)
     {
@@ -93,6 +106,7 @@ class ResasApiClient {
 
     /**
      * リクエストする際の検索条件 を取得
+     * @return string
      */
     public function getParameters()
     {
@@ -101,6 +115,8 @@ class ResasApiClient {
 
     /**
      * Hashクラスで絞り込む際のkey側のパス構文 をセット
+     * @param string $key_path
+     * @return $this
      */
     private function setKeyPath($key_path)
     {
@@ -110,6 +126,7 @@ class ResasApiClient {
 
     /**
      * Hashクラスで絞り込む際のkey側のパス構文 を取得
+     * @return string
      */
     public function getKeyPath()
     {
@@ -118,6 +135,8 @@ class ResasApiClient {
 
     /**
      * Hashクラスで絞り込む際のvalue側のパス構文 をセット
+     * @param string $value_path
+     * @return $this
      */
     private function setValuePath($value_path)
     {
@@ -127,6 +146,7 @@ class ResasApiClient {
 
     /**
      * Hashクラスで絞り込む際のvalue側のパス構文 を取得
+     * @return string
      */
     public function getValuePath()
     {
@@ -134,8 +154,29 @@ class ResasApiClient {
     }
 
     /**
+     * 待機処理を挟むかどうかのフラグ を「有効」でセット
+     * @return $this
+     */
+    public function enableSafetyWait()
+    {
+        $this->safety_wait = true;
+        return $this;
+    }
+
+    /**
+     * 待機処理を挟むかどうかのフラグ を「無効」でセット
+     * @return $this
+     */
+    public function disableSafetyWait()
+    {
+        $this->safety_wait = false;
+        return $this;
+    }
+
+    /**
      * RESASにcurlでAPIリクエストする
-     * @return array
+     * @param string $return_to 戻り値の形を制御するためのパラメータ
+     * @return array|string
      */
     private function callApi($return_to = 'array')
     {
@@ -163,6 +204,11 @@ class ResasApiClient {
 
         $response = curl_exec($curl);
         curl_close($curl);
+
+        // 0.21秒待機
+        if ($this->safety_wait === true) {
+            usleep(210000);
+        }
 
         // レスポンスチェック
         if ($response == '"400"') {
